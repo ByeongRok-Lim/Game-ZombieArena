@@ -17,6 +17,11 @@ struct AxisInfo
 	Axis axis;
 	list<Keyboard::Key> positiveKeys;
 	list<Keyboard::Key> negativeKeys;
+
+
+	float sensi;	//크면 빨리도달 작으면 늦게 도달
+	float limit;
+	float value; //-1.0 ~ 1.1
 };
 
 class InputMgr
@@ -35,9 +40,11 @@ public:
 	static void ProcessInput(const Event& event);
 	static void ClearInput();
 
-	static int GetAxis(list<Keyboard::Key> positive, list<Keyboard::Key> negative);
+	static float GetAxis(Axis axis);			//-1.0~ 1.0
 
-	static int GetAxis(Axis axis);
+	static int GetAxisRaw(list<Keyboard::Key> positive, list<Keyboard::Key> negative);
+	static void Update(float dt);
+	static int GetAxisRaw(Axis axis);				//-1, 0, 1
 
 	static bool GetKeyDown(Keyboard::Key key);			//눌린 순간
 	static bool GetKey(Keyboard::Key key);				//꾹 눌렀을때?

@@ -1,5 +1,6 @@
 #include "InputMgr.h"
 #include <algorithm>
+#include <cmath>
 
 map<Axis, AxisInfo> InputMgr::mapAxis;
 list<Keyboard::Key> InputMgr::downKeys;
@@ -14,6 +15,9 @@ void InputMgr::Init()
 	AxisInfo info;
 	// Hrizontal
 	info.axis = Axis::Horizontal;
+	info.sensi = 2.0f;
+	info.value = 0.f;
+	info.limit = 0.05f;
 	info.positiveKeys.clear();
 	info.positiveKeys.push_back(Keyboard::D);
 	info.positiveKeys.push_back(Keyboard::Right);
@@ -25,6 +29,9 @@ void InputMgr::Init()
 
 	//vertical
 	info.axis = Axis::Vertical; 
+	info.sensi = 2.0f;
+	info.value = 0.f;
+	info.limit = 0.05f;
 	info.positiveKeys.clear();
 	info.positiveKeys.push_back(Keyboard::S);
 	info.positiveKeys.push_back(Keyboard::Down);
@@ -44,13 +51,15 @@ void InputMgr::ClearInput()
 	downKeys.clear();
 	upKeys.clear();
 }
-//list<Keyboard::Key> downKeys;
-//list<Keyboard::Key> ingKeys;
-//list<Keyboard::Key> upKeys;
+float InputMgr::GetAxis(Axis axis)
+{
+	if (mapAxis.find(axis) != mapAxis.end())
+	{
+		return mapAxis[axis].value;
+	}
+	return 0.0f;
+}
 
-//static bool GetKeyDown(Keyboard::Key key);
-//static bool GetKey(Keyboard::Key key);
-//static bool GetKeyUp(Keyboard::Key key);
 
 void InputMgr::ProcessInput(const Event& event)
 {
@@ -73,7 +82,7 @@ void InputMgr::ProcessInput(const Event& event)
 	}
 }
 
-int InputMgr::GetAxis(list<Keyboard::Key> positive, list<Keyboard::Key> negative)
+int InputMgr::GetAxisRaw(list<Keyboard::Key> positive, list<Keyboard::Key> negative)
 {
 	int axis = 0;
 	bool isPositive = false;
@@ -115,12 +124,43 @@ int InputMgr::GetAxis(list<Keyboard::Key> positive, list<Keyboard::Key> negative
 	return axis;
 }
 
-int InputMgr::GetAxis(Axis axis)
+void InputMgr::Update(float dt)
+{
+	for (auto it = mapAxis.begin(); it != mapAxis.end(); ++it)
+	{	
+		AxisInfo& ref = it->second;
+		//Axis = ¹æÇâ
+		int axis = GetAxisRaw(ref.axis);
+		if (axis == 0)
+		{
+			axis = ref.value > 0 ? -1 : 1;
+			if (abs(ref.value) < ref.limit)
+			{
+				axis = 0;
+				ref.value = 0;
+			}
+		}
+				
+		ref.value += axis * ref.sensi * dt;
+		
+		if (ref.value > 1.f)
+		{
+			ref.value = 1.f;
+		}
+		if (ref.value < -1.f)
+		{
+			ref.value = -1.f;
+		}
+	
+	}
+}
+
+int InputMgr::GetAxisRaw(Axis axis)
 {
 	auto pair = mapAxis.find(axis);
 	if (pair != mapAxis.end())
 	{
-		return GetAxis(pair->second.positiveKeys, pair->second.negativeKeys);
+		return GetAxisRaw(pair->second.positiveKeys, pair->second.negativeKeys);
 	}
 	
 	return 0;
