@@ -2,6 +2,10 @@
 #include "../Player/Player.h"
 
 
+std::random_device Utils::rd;
+std::mt19937 Utils::gen(rd());
+
+
 void Utils::SetOrigin(Text& text, Pivots preset)
 {
 	SetOrigin(text, text.getLocalBounds(), preset);
@@ -60,3 +64,22 @@ void Utils::SetOrigin(Transformable& tr, FloatRect bounds, Pivots preset)
 
 	}
 }
+
+int Utils::RandomRange(int min, int max)
+{
+	int range = max - min;
+	return min + gen() % range;
+}
+
+void Utils::Normalize(Vector2f & dir)
+{
+
+	float length = sqrt(dir.x * dir.x + dir.y * dir.y);
+	if (length > 0)
+	{
+		dir /= length;
+	}
+	
+}
+
+

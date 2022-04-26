@@ -6,14 +6,18 @@ using namespace sf;
 class Player
 {
 private:
-	const float START_SPEED = 200;
+
+	const float START_SPEED = 1000;
+	const float START_ACCEL = 5000;
 	const float START_HEALTH = 100;
-	const float START_IMMUNE_MS = 100;
+	const float START_IMMUNE_MS = 200;
 
 	Vector2f position;
-
+	std::string textureFileName;
 	Sprite sprite;
 	Texture texture;
+
+	Vector2f tempPos;
 
 	Vector2i resolustion; //해상도
 	//플레이어 회전을 시키기 위해서 마우스 포인터가 어느 포인터에 있는지...
@@ -22,9 +26,9 @@ private:
 	int tileSize;
 
 	Vector2f direction; //어느방향으로 가야하는가... 방향*시간*속도'
+	Vector2f lastDir;
 	float speed;
 
-	float aspeed;
 	
 	int health; //현재 hp 게이지 구하기.
 	int maxHealth; //현재상태 최대 hP
