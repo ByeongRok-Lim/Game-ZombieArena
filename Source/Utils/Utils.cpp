@@ -71,15 +71,30 @@ int Utils::RandomRange(int min, int max)
 	return min + gen() % range;
 }
 
-void Utils::Normalize(Vector2f & dir)
+float Utils::GetLength(const Vector2f& vector)
+{
+	return sqrt(vector.x * vector.x + vector.y * vector.y);
+}
+
+Vector2f Utils::Normalize(Vector2f & vector)
 {
 
-	float length = sqrt(dir.x * dir.x + dir.y * dir.y);
+	float length = GetLength(vector);
 	if (length > 0)
 	{
-		dir /= length;
+		vector /= length;
 	}
+	return vector;
+
 	
+}
+
+float Utils::GetAngle(const Vector2f& from, const Vector2f& to)
+{
+	Vector2f dir = to - from;
+	float radian = atan2(dir.y, dir.x);
+	float degree = radian * 180 / 3.141592f;
+	return degree;
 }
 
 

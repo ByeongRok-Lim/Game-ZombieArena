@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Source/Utils/TextureHolder.h"
 #include "Source/Player/Zombie.h"
+#include "Source/PickUp/PickUp.h"
 
 using namespace sf;
 using namespace std;
@@ -87,24 +88,45 @@ int main()
     resolution.x = VideoMode::getDesktopMode().width;
     resolution.y = VideoMode::getDesktopMode().height;
 
-    RenderWindow window(VideoMode(resolution.x, resolution.y), "Zombie Arena!!", Style::Default);
+    RenderWindow window(VideoMode(resolution.x, resolution.y), "Zombie Arena!!", Style::Fullscreen);
     
+    //윈도우 위에서 마우스 커서 없애기
+    window.setMouseCursorVisible(false);
+
+    //마우스 포지션에 그림 넣기
+    Sprite spriteCrosshair;
+    Texture textureCrosshair = TextureHolder::GetTexture("graphics/crosshair.png");
+    spriteCrosshair.setTexture(textureCrosshair);
+    Utils::SetOrigin(spriteCrosshair, Pivots::CC);
+
     //플레이어 카메라 뷰
     View mainView(FloatRect(0, 0, resolution.x, resolution.y));
+    View uiView(FloatRect(0, 0, resolution.x, resolution.y));
+
 
     InputMgr::Init();
    
     IntRect arena;
-    arena.width = 500;//resolution.x;
-    arena.height = 500;// resolution.y;
+    arena.width = 1000; //resolution.x;
+    arena.height = 1000; //resolution.y;
+
+    PickUp ammoPickUp(PickUpTypes::Ammo);
+    PickUp healthPickUp(PickUpTypes::Health);
+    ammoPickUp.SetArena(arena);
+    healthPickUp.SetArena(arena);
+
+    std::list<PickUp*> items;
+    items.push_back(&ammoPickUp);
+    items.push_back(&healthPickUp);
 
     Player player;
     player.Spawn(arena, resolution, 0.f);
 
     std::vector<Zombie*> zombies;
-    CreateZombies(zombies, 10, arena);
+    CreateZombies(zombies, 100, arena);
 
     Clock clock;
+    Time playTime;
     
     Texture textBackground = TextureHolder::GetTexture("graphics/background_sheet.png");
     //textBackground.loadFromFile("graphics/background_sheet.png");
@@ -115,6 +137,7 @@ int main()
     while (window.isOpen())
     {
         Time dt = clock.restart();
+        playTime += dt;
         Event event;
         InputMgr::ClearInput();
         while (window.pollEvent(event))
@@ -126,15 +149,14 @@ int main()
             InputMgr::ProcessInput(event);
         }
 
-        //업데잉트
-        InputMgr::Update(dt.asSeconds());
+        //업데이트
+        InputMgr::Update(dt.asSeconds(), window, mainView);
 
         //메시지 찍기
-        
         //std::cout << InputMgr::GetAxis(Axis::Horizontal) << std::endl;
-        
-        player.update(dt.asSeconds());
+        spriteCrosshair.setPosition(InputMgr::GetMouseWorldPosition());
 
+        player.update(dt.asSeconds());
         //플레이어 카메라 위치 잡기
         mainView.setCenter(player.GetPosition());
 
@@ -143,17 +165,52 @@ int main()
             zombie->Update(dt.asSeconds(), player.GetPosition());
         }
 
+        ammoPickUp.Update(dt.asSeconds());
+        healthPickUp.Update(dt.asSeconds());
+
+        //충돌처리 Collision
+        player.UpdateCollision(zombies);
+        for (auto zombie : zombies)
+        {
+            if (zombie->UpdateCollision(playTime, player))
+            {
+                break;
+            }
+        }
+        player.UpdateCollition(items);
+        
+
+
+        //드로우
         window.clear();
         //플레이어 뷰 넣기!
         window.setView(mainView);
         window.draw(tileMap, &textBackground);
+
+        if (ammoPickUp.IsSpawned())
+        {
+            window.draw(ammoPickUp.GetSprite());
+        }
+        if (healthPickUp.IsSpawned())
+        {
+            window.draw(healthPickUp.GetSprite());
+        }
 
         for (auto zombie : zombies)
         {
             window.draw(zombie->GetSprite());
         }
         
-        window.draw(player.GetSprite());
+        //window.draw(player.GetSprite());
+        player.Draw(window);
+
+        window.draw(spriteCrosshair);
+         
+
+        window.setView(uiView);
+        //Ui에 그릴 애들 
+
+
         window.display();
     }
 

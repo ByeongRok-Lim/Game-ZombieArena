@@ -6,7 +6,13 @@ map<Axis, AxisInfo> InputMgr::mapAxis;
 list<Keyboard::Key> InputMgr::downKeys;
 list<Keyboard::Key> InputMgr::ingKeys;
 list<Keyboard::Key> InputMgr::upKeys;
+list<Mouse::Button> InputMgr::buttonDown;
+list<Mouse::Button> InputMgr::ingbutton;
+list<Mouse::Button> InputMgr::buttonUp;
+bool InputMgr::setPress = false;
 
+Vector2i InputMgr::mousePosition;
+Vector2f InputMgr::mousePositionWorld;
 
 void InputMgr::Init()
 {
@@ -50,6 +56,8 @@ void InputMgr::ClearInput()
 {
 	downKeys.clear();
 	upKeys.clear();
+	buttonDown.clear();
+	
 }
 float InputMgr::GetAxis(Axis axis)
 {
@@ -77,8 +85,19 @@ void InputMgr::ProcessInput(const Event& event)
 			ingKeys.remove(event.key.code);
 			upKeys.push_back(event.key.code);	//동작이 멈추어야한다.
 		break;
+	case Event::MouseButtonPressed:
+		setPress = true;
+		break;
+	case Event::MouseButtonReleased:
+		setPress = false;
+		break;
 	default:
 		break;
+	}
+	if (setPress == true)
+	{
+		buttonDown.push_back(event.mouseButton.button);
+		ingbutton.push_back(event.mouseButton.button);
 	}
 }
 
@@ -124,7 +143,7 @@ int InputMgr::GetAxisRaw(list<Keyboard::Key> positive, list<Keyboard::Key> negat
 	return axis;
 }
 
-void InputMgr::Update(float dt)
+void InputMgr::Update(float dt, RenderWindow& window, View& worldView)
 {
 	for (auto it = mapAxis.begin(); it != mapAxis.end(); ++it)
 	{	
@@ -153,7 +172,10 @@ void InputMgr::Update(float dt)
 		}
 	
 	}
+	mousePosition = Mouse::getPosition();
+	mousePositionWorld = window.mapPixelToCoords(mousePosition, worldView);
 }
+
 
 int InputMgr::GetAxisRaw(Axis axis)
 {
@@ -193,5 +215,28 @@ bool InputMgr::GetKeyUp(Keyboard::Key key)
 
 Vector2i InputMgr::GetMousePosition()
 {
-	return Mouse::getPosition();
+	return mousePosition;
+}
+
+Vector2f InputMgr::GetMouseWorldPosition()
+{
+	return mousePositionWorld;
+}
+
+bool InputMgr::GetMouseButtonDown(Mouse::Button button)
+{
+	auto it = find(buttonDown.begin(), buttonDown.end(), button);
+	return it != buttonDown.end();
+}
+
+bool InputMgr::GetMouseButton(Mouse::Button button)
+{
+	auto it = find(ingbutton.begin(), ingbutton.end(), button);
+	return it != ingbutton.end();
+}
+
+bool InputMgr::GetMouseButtonUp(Mouse::Button button)
+{
+	auto it = find(buttonUp.begin(), buttonUp.end(), button);
+	return it != buttonUp.end();
 }

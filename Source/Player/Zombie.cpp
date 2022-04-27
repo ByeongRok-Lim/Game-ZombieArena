@@ -2,6 +2,9 @@
 #include "../Utils/TextureHolder.h"
 #include "../Utils/Utils.h"
 #include "../Utils/InputMgr.h"
+#include "Player.h"
+#include <iostream>
+
 std::vector<ZombieInfo> Zombie::zombieInfo;
 bool Zombie::isiInitInfo = false;
 Zombie::Zombie()
@@ -37,6 +40,7 @@ Zombie::Zombie()
 
 bool Zombie::OnHitted()
 {
+	std::cout << "Hitttttttt" << std::endl;
 	return false;
 }
 
@@ -71,16 +75,33 @@ void Zombie::Update(float dt, Vector2f playerPosition)
 	Vector2f dir(x, y);
 
 	//정규화
-	Utils::Normalize(dir);
-	//이동
-	position += dir * speed * dt;
+	float length = sqrt(dir.x * dir.x + dir.y * dir.y);
+	if (length > 0)
+	{
+		dir /= length;
+	}
+	if (length < speed * dt* 0.5f)
+	{
+		position = playerPosition;
+	}
+	else
+	{
+		position += dir * speed * dt;
+	}
 	sprite.setPosition(position);
 	//회전
 	float radian = atan2(dir.y, dir.x);
 	float degree = radian * 180.f / 3.141592f;
 	sprite.setRotation(degree);
-	//이동량이 나오면 스피드, 델타타임을 정해줌
-	//이동하고 플레이어를 바라보게 회전
+}
+
+bool Zombie::UpdateCollision(Time time, Player& player)
+{
+	if (sprite.getGlobalBounds().intersects(player.GetGlobalBound()))
+	{
+		return player.OnHitted(time);
+	}
+	return false;
 }
 
 FloatRect Zombie::GetGlobalBound()

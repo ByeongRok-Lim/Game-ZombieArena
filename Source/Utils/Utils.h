@@ -26,6 +26,9 @@ public:
 	static void SetOrigin(Shape& shape, Pivots preset);
 	static void SetOrigin(Transformable& tr, FloatRect bounds,Pivots preset);
 	static int RandomRange(int min, int max);
-	static void Normalize(Vector2f& dir);
+	static float GetLength(const Vector2f& vector);
+	static Vector2f Normalize(Vector2f& vector);
+	static float GetAngle(const Vector2f& from, const Vector2f& to);
+
 };
 
