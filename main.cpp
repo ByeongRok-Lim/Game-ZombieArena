@@ -107,8 +107,8 @@ int main()
     InputMgr::Init();
    
     IntRect arena;
-    arena.width = 1000; //resolution.x;
-    arena.height = 1000; //resolution.y;
+    arena.width = resolution.x;
+    arena.height = resolution.y;
 
     PickUp ammoPickUp(PickUpTypes::Ammo);
     PickUp healthPickUp(PickUpTypes::Health);
@@ -199,6 +199,7 @@ int main()
         for (auto zombie : zombies)
         {
             window.draw(zombie->GetSprite());
+            zombie->Draw(window);
         }
         
         //window.draw(player.GetSprite());

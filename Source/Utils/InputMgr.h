@@ -18,12 +18,9 @@ struct AxisInfo
 	list<Keyboard::Key> positiveKeys;
 	list<Keyboard::Key> negativeKeys;
 
-
 	float sensi;	//크면 빨리도달 작으면 늦게 도달
 	float limit;
 	float value; //-1.0 ~ 1.1
-
-	
 };
 
 class InputMgr
@@ -34,6 +31,7 @@ private:
 	static list<Keyboard::Key> downKeys;
 	static list<Keyboard::Key> ingKeys;
 	static list<Keyboard::Key> upKeys;
+
 	static list<Mouse::Button> buttonDown;
 	static list<Mouse::Button> ingbutton;
 	static list<Mouse::Button> buttonUp;
@@ -64,8 +62,6 @@ public:
 	static bool GetMouseButtonDown(Mouse::Button button);
 	static bool GetMouseButton(Mouse::Button button);
 	static bool GetMouseButtonUp(Mouse::Button button);
-	
-	
 };
 
 //InputMgr::GetMouseButtonDown, GetMouseButton, GetMouseButtonUp(Mouse::Button) 추가하기.!

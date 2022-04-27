@@ -136,21 +136,22 @@ void Player::update(float dt)
 	
 
 	//충돌처리
-	if (position.x < arena.left + 50.f || position.x > arena.width - 50.f)
+	if (position.x > resolustion.x - 100)
 	{
-		position.x -= 2;
+		position.x = resolustion.x - 100;
 	}
-	if (position.x < arena.left + 50)
+	if (position.x < 50) 
 	{
-		position.x += 10;
+		position.x = 50;
 	}
-	if (position.y < arena.top + 50.f || position.y > arena.height - 50.f)
+
+	if (position.y > resolustion.y - 100)
 	{
-		position.y -= 2;
+		position.y = resolustion.y - 100;
 	}
-	if (position.y < arena.top + 50)
+	if (position.y < 50) 
 	{
-		position.y += 10;
+		position.y = 50;
 	}
 	
 	sprite.setPosition(position);

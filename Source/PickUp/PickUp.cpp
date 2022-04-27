@@ -13,6 +13,7 @@ PickUp::PickUp(PickUpTypes type)
 		textureID = "graphics/ammo_pickup.png";
 		value = AMMO_START_VKLUE;
 		break;
+
 	case PickUpTypes::Health:
 		textureID = "graphics/health_pickup.png";
 		value = HEALTH_START_VALUE;
@@ -44,9 +45,7 @@ void PickUp::Spawn(bool spawn)
 		int x = Utils::RandomRange(arena.left, arena.left + arena.width);
 		int y = Utils::RandomRange(arena.top, arena.top + arena.height);
 
-
 		sprite.setPosition(Vector2f(x, y));
-
 	}
 	else
 	{

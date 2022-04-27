@@ -8,6 +8,7 @@
 std::vector<ZombieInfo> Zombie::zombieInfo;
 bool Zombie::isiInitInfo = false;
 Zombie::Zombie()
+	:deleteBloodTime(5.f), zombieState(ZombieState::DROP)
 {
 	if (!isiInitInfo)
 	{
@@ -40,17 +41,19 @@ Zombie::Zombie()
 
 bool Zombie::OnHitted()
 {
-	std::cout << "Hitttttttt" << std::endl;
+	sprite.setTexture(TextureHolder::GetTexture("graphics/blood.png"));
+	zombieState = ZombieState::DEATH;
 	return false;
 }
 
 bool Zombie::IsAlive()
 {
-	return alive;
+	return ZombieState::ALIVE == zombieState;
 }
 
 void Zombie::Spawn(float x, float y, ZombieTypes type)
 {
+	zombieState = ZombieState::ALIVE;
 	auto& info = zombieInfo[(int)type];
 	sprite.setTexture(TextureHolder::GetTexture(info.textureFileName));
 	speed = info.speed;
@@ -65,7 +68,19 @@ void Zombie::Spawn(float x, float y, ZombieTypes type)
 
 void Zombie::Update(float dt, Vector2f playerPosition)
 {
-	//숙제................ㅠㅠ
+	switch (zombieState)
+	{
+	case ZombieState::DEATH:
+		deleteBloodTime -= dt;
+		if (deleteBloodTime < 0) 
+		{
+			zombieState = ZombieState::DROP;
+		}
+		return;
+	case ZombieState::DROP:
+		return;
+	}
+
 	//플레이어포지션에서 좀비포지션으로 뺴준다
 	Vector2f zombieDir;
 	float x = playerPosition.x - position.x;
@@ -112,4 +127,16 @@ FloatRect Zombie::GetGlobalBound()
 Sprite Zombie::GetSprite()
 {
 	return sprite;
+}
+
+void Zombie::Draw(RenderWindow& window)
+{
+	if (zombieState == ZombieState::ALIVE)
+	{
+
+	}
+	else if (zombieState == ZombieState::DEATH)
+	{
+		window.draw(sprite);
+	}
 }

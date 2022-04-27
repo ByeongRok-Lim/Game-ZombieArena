@@ -22,22 +22,30 @@ struct ZombieInfo
 	int health;
 };
 
-
+enum class ZombieState
+{
+	ALIVE,
+	DEATH,
+	DROP,
+};
 
 class Zombie
 {
 private:
 	ZombieTypes zombieTypes;
+	ZombieState zombieState; //좀비상태가 없는 상태
 	Vector2f position;
 	Sprite sprite;
 
 	float speed;	//기본속도
 	int health;	//체력
 
-	bool alive; //살았는지 죽었는지
-	
+	//bool alive; //살았는지 죽었는지
+	float deleteBloodTime;	//피를 삭제하는 시간?
+
 	static std::vector<ZombieInfo> zombieInfo;
 	static bool isiInitInfo;
+
 public:
 	Zombie();
 	bool OnHitted();
@@ -51,6 +59,7 @@ public:
 	FloatRect GetGlobalBound();
 	Sprite GetSprite();
 
+	void Draw(RenderWindow& window);
 	
 };
 

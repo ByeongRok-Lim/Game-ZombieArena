@@ -86,19 +86,22 @@ void InputMgr::ProcessInput(const Event& event)
 			upKeys.push_back(event.key.code);	//동작이 멈추어야한다.
 		break;
 	case Event::MouseButtonPressed:
+		if (!GetKey(event.key.code))
+		{
+			buttonDown.push_back(event.mouseButton.button);	
+			ingbutton.push_back(event.mouseButton.button);	
+		}
 		setPress = true;
 		break;
 	case Event::MouseButtonReleased:
+		ingbutton.remove(event.mouseButton.button);
+		buttonUp.push_back(event.mouseButton.button);	//동작이 멈추어야한다.
 		setPress = false;
 		break;
 	default:
 		break;
 	}
-	if (setPress == true)
-	{
-		buttonDown.push_back(event.mouseButton.button);
-		ingbutton.push_back(event.mouseButton.button);
-	}
+
 }
 
 int InputMgr::GetAxisRaw(list<Keyboard::Key> positive, list<Keyboard::Key> negative)
