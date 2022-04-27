@@ -11,6 +11,12 @@
     <Filter Include="소스 파일\Utils">
       <UniqueIdentifier>{30803101-4266-44b0-8778-7226fb24886f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Bullet">
+      <UniqueIdentifier>{35525f6d-26f7-4f5b-9fb7-d492cc6e3bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\PickUp">
+      <UniqueIdentifier>{5cfd5d46-9fb4-4c54-a8d8-b9b9a353783e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,6 +37,12 @@
     <ClCompile Include="Source\Player\Zombie.cpp">
       <Filter>소스 파일\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Bullet\Bullet.cpp">
+      <Filter>소스 파일\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PickUp\PickUp.cpp">
+      <Filter>소스 파일\PickUp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Utils\Utils.h">
@@ -47,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="Source\Player\Zombie.h">
       <Filter>소스 파일\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Bullet\Bullet.h">
+      <Filter>소스 파일\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PickUp\PickUp.h">
+      <Filter>소스 파일\PickUp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
